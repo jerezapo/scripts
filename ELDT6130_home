@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Course Message</title>
+<style>
+  body { margin:0; font: 16px/1.4 Arial, sans-serif; color:#1f2d3d; }
+  .wrap { padding: 8px 12px; }
+  .msg { font-size: 1.1rem; }
+</style>
+<div class="wrap"><div id="msg" class="msg">Loading…</div></div>
+<script>
+  // Force America/New_York even if a student is elsewhere
+  const tz = "America/New_York";
+  const now = new Date(new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, year:'numeric', month:'2-digit', day:'2-digit'
+  }).format(new Date()).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$1-$2'));
+
+  // Helpers
+  const y = now.getFullYear();
+  const iso = (m,d)=>`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const between = (start, end) => (d => d >= new Date(start) && d <= new Date(end))(now);
+
+  // Rules: customize these!
+  let message =
+    between(iso(8,5), iso(8,11)) ? "🎉 Week 1 is live! Start with the Getting Started module."
+  : between(iso(8,12), iso(8,18)) ? "🧪 Quiz 1 opens Wednesday. Check Modules for the link."
+  : between(iso(8,19), iso(8,25)) ? "📦 Project proposal due Sunday 11:59 PM (submit in Assignments)."
+  : "👋 Welcome! Open the current week’s module and check Announcements.";
+
+  document.getElementById("msg").textContent = message;
+
+  // Auto-size the iframe (Canvas page) if allowed
+  try {
+    const h = document.body.scrollHeight;
+    parent.postMessage({ type:'set-iframe-height', height:h }, '*');
+  } catch (_) {}
+</script>
